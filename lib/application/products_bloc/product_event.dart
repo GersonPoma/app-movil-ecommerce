@@ -6,6 +6,7 @@ abstract class ProductEvent extends Equatable {
 
 class GetProducts extends ProductEvent {
   final FilterProductParams params;
+
   const GetProducts(this.params);
 
   @override
@@ -14,6 +15,7 @@ class GetProducts extends ProductEvent {
 
 class GetMoreProducts extends ProductEvent {
   const GetMoreProducts();
+
   @override
   List<Object> get props => [];
 }
@@ -21,7 +23,7 @@ class GetMoreProducts extends ProductEvent {
 class SortProducts extends ProductEvent {
   final SortOrder? sortOrder;
 
-  SortProducts({this.sortOrder});
+  const SortProducts({this.sortOrder});
 
   @override
   List<Object?> get props => [sortOrder];

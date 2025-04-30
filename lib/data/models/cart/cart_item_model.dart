@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../../../domain/entities/cart/cart_item.dart';
-import '../product/price_tag_model.dart';
 import '../product/product_model.dart';
 
 List<CartItemModel> cartItemModelListFromLocalJson(String str) =>
@@ -10,7 +9,7 @@ List<CartItemModel> cartItemModelListFromLocalJson(String str) =>
 
 List<CartItemModel> cartItemModelListFromRemoteJson(String str) =>
     List<CartItemModel>.from(
-        json.decode(str)["data"].map((x) => CartItemModel.fromJson(x)));
+        json.decode(str).map((x) => CartItemModel.fromJson(x)));
 
 List<CartItemModel> cartItemModelFromJson(String str) =>
     List<CartItemModel>.from(
@@ -20,37 +19,44 @@ String cartItemModelToJson(List<CartItemModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class CartItemModel extends CartItem {
+  final String? fechaAgregado;
+
   const CartItemModel({
     String? id,
     required ProductModel product,
-    required PriceTagModel priceTag,
-  }) : super(id: id, product: product, priceTag: priceTag);
+    required int cantidad,
+    this.fechaAgregado,
+  }) : super(id: id, product: product, cantidad: cantidad);
 
+  /// Convertir desde JSON (respuesta del backend)
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
-      id: json["_id"],
-      product: ProductModel.fromJson(json["product"]),
-      priceTag: PriceTagModel.fromJson(json["priceTag"]),
+      id: json["id"]?.toString(),
+      product: ProductModel.fromJson(json["producto"]),
+      cantidad: json["cantidad"],
+      fechaAgregado: json["fecha_agregado"],
     );
   }
 
+  /// Para guardar localmente o manipular internamente
   Map<String, dynamic> toJson() => {
-        "_id": id,
-        "product": (product as ProductModel).toJson(),
-        "priceTag": (priceTag as PriceTagModel).toJson(),
+        "id": id,
+        "producto": (product as ProductModel).toJson(),
+        "cantidad": cantidad,
+        "fecha_agregado": fechaAgregado,
       };
 
+  /// Para enviar al backend (POST/PUT)
   Map<String, dynamic> toBodyJson() => {
-        "_id": id,
-        "product": product.id,
-        "priceTag": priceTag.id,
+        "producto_id": product.id,
+        "cantidad": cantidad,
       };
 
   factory CartItemModel.fromParent(CartItem cartItem) {
     return CartItemModel(
-      id: cartItem.id,
+      id: cartItem.id.toString(),
       product: cartItem.product as ProductModel,
-      priceTag: cartItem.priceTag as PriceTagModel,
+      cantidad: cartItem.cantidad,
     );
   }
 }

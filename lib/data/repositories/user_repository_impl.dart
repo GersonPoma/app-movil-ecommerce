@@ -57,20 +57,54 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   Future<Either<Failure, User>> _authenticate(
-      _DataSourceChooser getDataSource,
-      ) async {
+    _DataSourceChooser getDataSource,
+  ) async {
     if (await networkInfo.isConnected) {
       try {
         final remoteResponse = await getDataSource();
-        localDataSource.saveToken(remoteResponse.token);
-        localDataSource.saveUser(remoteResponse.user);
+
+        // Guardar ambos tokens (access y refresh)
+        await localDataSource.saveToken(remoteResponse.accessToken);
+        await localDataSource.saveRefreshToken(remoteResponse.refreshToken);
+
+        // Guardar usuario en SharedPreferences
+        await localDataSource.saveUser(remoteResponse.user);
+
         return Right(remoteResponse.user);
-      } on Failure catch (failure) {
-        return Left(failure);
+      } on CredentialFailure {
+        return Left(CredentialFailure());
+      } on ServerFailure {
+        return Left(ServerFailure());
+      } catch (_) {
+        return Left(ServerFailure());
       }
     } else {
       return Left(NetworkFailure());
     }
   }
 
+  @override
+  Future<Either<Failure, String>> refreshToken() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final refreshToken = await localDataSource.getRefreshToken();
+
+        final newAccessToken =
+            await remoteDataSource.refreshToken(refreshToken);
+
+        await localDataSource.saveToken(newAccessToken);
+
+        return Right(newAccessToken);
+      } catch (_) {
+        return Left(ServerFailure());
+      }
+    } else {
+      return Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<bool> isTokenAvailable() async {
+    return await localDataSource.isTokenAvailable();
+  }
 }

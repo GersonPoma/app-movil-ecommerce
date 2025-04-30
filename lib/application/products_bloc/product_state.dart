@@ -2,60 +2,70 @@ part of 'product_bloc.dart';
 
 abstract class ProductState extends Equatable {
   final List<ProductEntity> products;
-  final PaginationMetaData metaData;
   final FilterProductParams params;
-  const ProductState(
-      {required this.products, required this.metaData, required this.params});
+  final String? siguientePaginaUrl;
+
+  const ProductState({
+    required this.products,
+    required this.params,
+    required this.siguientePaginaUrl,
+  });
 }
 
 class ProductInitial extends ProductState {
   const ProductInitial({
     required super.products,
-    required super.metaData,
     required super.params,
+    required super.siguientePaginaUrl,
   });
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [products, params, siguientePaginaUrl];
 }
 
 class ProductEmpty extends ProductState {
   const ProductEmpty({
     required super.products,
-    required super.metaData,
     required super.params,
+    required super.siguientePaginaUrl,
   });
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [products, params, siguientePaginaUrl];
 }
 
 class ProductLoading extends ProductState {
   const ProductLoading({
     required super.products,
-    required super.metaData,
     required super.params,
+    required super.siguientePaginaUrl,
   });
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [products, params, siguientePaginaUrl];
 }
 
 class ProductLoaded extends ProductState {
   const ProductLoaded({
     required super.products,
-    required super.metaData,
     required super.params,
+    required super.siguientePaginaUrl,
   });
+
   @override
-  List<Object> get props => [products];
+  List<Object?> get props => [products, params, siguientePaginaUrl];
 }
 
 class ProductError extends ProductState {
   final Failure failure;
+
   const ProductError({
     required super.products,
-    required super.metaData,
     required super.params,
+    required super.siguientePaginaUrl,
     required this.failure,
   });
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [products, params, siguientePaginaUrl, failure];
 }

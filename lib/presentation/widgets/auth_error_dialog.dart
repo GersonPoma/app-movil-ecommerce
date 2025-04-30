@@ -3,8 +3,8 @@ import 'package:piiicks/configs/configs.dart';
 
 import '../../core/constant/colors.dart';
 
-Future<void> showAuthErrorDialog(BuildContext context) async{
-  return  showDialog(
+Future<void> showAuthErrorDialog(BuildContext context) async {
+  return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -14,8 +14,7 @@ Future<void> showAuthErrorDialog(BuildContext context) async{
             padding: Space.all(1, .5),
             child: Center(
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Error",
@@ -27,18 +26,17 @@ Future<void> showAuthErrorDialog(BuildContext context) async{
                     style: AppText.b1,
                   ),
                   Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          "Dismiss",
+                          "Cerrar",
                           style: AppText.h3b?.copyWith(
-                              color:
-                              AppColors.CommonCyan,),
+                            color: AppColors.CommonCyan,
+                          ),
                         ),
                       )
                     ],

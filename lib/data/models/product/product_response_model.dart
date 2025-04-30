@@ -1,7 +1,5 @@
-import '../../../domain/entities/product/pagination_meta_data.dart';
 import '../../../domain/entities/product/product.dart';
 import '../../../domain/entities/product/product_response.dart';
-import 'pagination_data_model.dart';
 import 'product_model.dart';
 import 'dart:convert';
 
@@ -13,19 +11,32 @@ String productResponseModelToJson(ProductResponseModel data) =>
 
 class ProductResponseModel extends ProductResponse {
   ProductResponseModel({
-    required PaginationMetaData meta,
-    required List<ProductEntity> data,
-  }) : super(products: data, paginationMetaData: meta);
+    required List<ProductEntity> productos,
+    required int total,
+    String? siguientePaginaUrl,
+    String? paginaAnteriorUrl,
+  }) : super(
+          productos: productos,
+          total: total,
+          siguientePaginaUrl: siguientePaginaUrl,
+          paginaAnteriorUrl: paginaAnteriorUrl,
+        );
 
   factory ProductResponseModel.fromJson(Map<String, dynamic> json) =>
       ProductResponseModel(
-        meta: PaginationMetaDataModel.fromJson(json["meta"]),
-        data: List<ProductModel>.from(
-            json["data"].map((x) => ProductModel.fromJson(x))),
-      );
+          total: json['count'],
+          siguientePaginaUrl: json['next'],
+          paginaAnteriorUrl: json['previous'],
+          productos: List<ProductEntity>.from(
+            json['results'].map((item) => ProductModel.fromJson(item)),
+          ));
 
   Map<String, dynamic> toJson() => {
-        "meta": (paginationMetaData as PaginationMetaDataModel).toJson(),
-        "data": List<dynamic>.from((products as List<ProductModel>).map((x) => x.toJson())),
+        'count': total,
+        'next': siguientePaginaUrl,
+        'previous': paginaAnteriorUrl,
+        'results': List<dynamic>.from(
+          productos.map((item) => (item as ProductModel).toJson()),
+        ),
       };
 }

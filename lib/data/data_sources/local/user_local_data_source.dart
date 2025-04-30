@@ -7,9 +7,13 @@ import '../../models/user/user_model.dart';
 abstract class UserLocalDataSource {
   Future<String> getToken();
 
+  Future<String> getRefreshToken(); // Nuevo método
+
   Future<UserModel> getUser();
 
   Future<void> saveToken(String token);
+
+  Future<void> saveRefreshToken(String refreshToken); // Nuevo método
 
   Future<void> saveUser(UserModel user);
 
@@ -19,6 +23,7 @@ abstract class UserLocalDataSource {
 }
 
 const cachedToken = 'TOKEN';
+const cachedRefreshToken = 'REFRESH_TOKEN';
 const cachedUser = 'USER';
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -40,6 +45,21 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   @override
   Future<void> saveToken(String token) async {
     await secureStorage.write(key: cachedToken, value: token);
+  }
+
+  @override
+  Future<void> saveRefreshToken(String refreshToken) async {
+    await secureStorage.write(key: 'REFRESH_TOKEN', value: refreshToken);
+  }
+
+  @override
+  Future<String> getRefreshToken() async {
+    final token = await secureStorage.read(key: cachedRefreshToken);
+    if (token != null) {
+      return token;
+    } else {
+      throw CacheException();
+    }
   }
 
   @override
@@ -73,7 +93,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   @override
   Future<void> clearCache() async {
     await secureStorage.deleteAll();
-  //  await sharedPreferences.remove(cachedCart);
+    //  await sharedPreferences.remove(cachedCart);
     await sharedPreferences.remove(cachedUser);
   }
 }

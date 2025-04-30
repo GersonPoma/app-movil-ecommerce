@@ -28,13 +28,15 @@ class _WishListScreenState extends State<WishListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar('WISHLIST', context,automaticallyImplyLeading: true),
-        floatingActionButton: FloatingActionButton(onPressed: (){
-          setState(() {
-            context.read<WishlistCubit>().clearWishlist();
-          });
-
-        },child: Icon(Icons.delete_forever_outlined)),
+        appBar:
+            CustomAppBar('WISHLIST', context, automaticallyImplyLeading: true),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                context.read<WishlistCubit>().clearWishlist();
+              });
+            },
+            child: Icon(Icons.delete_forever_outlined)),
         body: BlocBuilder<WishlistCubit, WishlistState>(
           builder: (context, state) {
             if (state is WishlistLoadedState) {
@@ -69,9 +71,9 @@ class _WishListScreenState extends State<WishListScreen> {
                 return SizedBox(
                   child: GridView.builder(
                     padding: Space.all(1),
-                    itemCount: state.wishlist.length ,
+                    itemCount: state.wishlist.length,
                     gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.55,
                       crossAxisSpacing: 6,
@@ -79,14 +81,19 @@ class _WishListScreenState extends State<WishListScreen> {
                     physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
-
-                      return  RectangularProductItem(product: state.wishlist[index],isFromWishlist: true,);
+                      return RectangularProductItem(
+                        product: state.wishlist[index],
+                        isFromWishlist: true,
+                      );
                     },
                   ),
                 );
               }
             } else {
-              return const Center(child:  CircularProgressIndicator(color: AppColors.CommonCyan,));
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: AppColors.CommonCyan,
+              ));
             }
           },
         ));
@@ -104,7 +111,7 @@ class YourWishlistWidget extends StatelessWidget {
       itemCount: wishlist.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(wishlist[index].name),
+          title: Text(wishlist[index].nombre),
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(

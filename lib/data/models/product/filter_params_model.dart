@@ -2,36 +2,39 @@ import '../../../domain/entities/category/category.dart';
 
 class FilterProductParams {
   final String? keyword;
+  final String? siguientePaginaUrl; // Guardamos la URL para la siguiente carga
   final List<Category> categories;
-  final double minPrice;
-  final double maxPrice;
-  final int? limit;
-  final int? pageSize;
 
   const FilterProductParams({
-    this.keyword = '',
+    this.keyword,
+    this.siguientePaginaUrl,
     this.categories = const [],
-    this.minPrice = 0,
-    this.maxPrice = 10000,
-    this.limit = 0,
-    this.pageSize = 10,
   });
 
+  /// Convertimos los filtros en parámetros de URL
+  Map<String, String> toQueryParams() {
+    final params = <String, String>{};
+
+    if (keyword != null && keyword!.isNotEmpty) {
+      params['search'] = keyword!;
+    }
+
+    if (categories.isNotEmpty) {
+      // Suponiendo que tu backend acepte algo como ?categories=1,3,5
+      params['categoria'] = categories.map((c) => c.id).join(',');
+    }
+
+    return params;
+  }
+
   FilterProductParams copyWith({
-    int? skip,
     String? keyword,
+    String? siguientePaginaUrl,
     List<Category>? categories,
-    double? minPrice,
-    double? maxPrice,
-    int? limit,
-    int? pageSize,
   }) =>
       FilterProductParams(
         keyword: keyword ?? this.keyword,
+        siguientePaginaUrl: siguientePaginaUrl ?? this.siguientePaginaUrl,
         categories: categories ?? this.categories,
-        minPrice: minPrice ?? this.minPrice,
-        maxPrice: maxPrice ?? this.maxPrice,
-        limit: skip ?? this.limit,
-        pageSize: pageSize ?? this.pageSize,
       );
 }

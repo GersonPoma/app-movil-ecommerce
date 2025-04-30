@@ -14,13 +14,15 @@ const cachedProducts = 'CACHED_PRODUCTS';
 
 class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   final SharedPreferences sharedPreferences;
+
   ProductLocalDataSourceImpl({required this.sharedPreferences});
 
   @override
   Future<ProductResponseModel> getLastProducts() {
     final jsonString = sharedPreferences.getString(cachedProducts);
     if (jsonString != null) {
-      return Future.value(productResponseModelFromJson(jsonDecode(jsonString)));
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return Future.value(ProductResponseModel.fromJson(jsonMap));
     } else {
       throw CacheException();
     }
@@ -28,9 +30,10 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
 
   @override
   Future<void> saveProducts(ProductResponseModel productsToCache) {
+    final jsonMap = productResponseModelToJson(productsToCache);
     return sharedPreferences.setString(
       cachedProducts,
-      json.encode(productResponseModelToJson(productsToCache)),
+      json.encode(jsonMap),
     );
   }
 }

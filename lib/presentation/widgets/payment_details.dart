@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piiicks/domain/entities/cart/cart_item.dart';
 import 'package:piiicks/domain/entities/order/order_item.dart';
 import 'package:piiicks/presentation/widgets/auth_check_modalsheet.dart';
 import 'package:piiicks/presentation/widgets/payment_details_row.dart';
@@ -53,14 +54,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
               Space.yf(),
               PaymentDetailsRow(
                   "SUB Total",
-                  '${state.cart.fold(0.0, (previousValue, element) => (element.priceTag.price + previousValue))}',
+                  '${CartUtils.calcularSubtotal(state.cart).toStringAsFixed(2)}',
                   null),
               PaymentDetailsRow("Gift Charges", '0.000', null),
               PaymentDetailsRow("Discount", '0.000', null),
               PaymentDetailsRow("Shipping Charges", '5.000', null),
               PaymentDetailsRow(
                   "Total",
-                  '${state.cart.fold(0.0, (previousValue, element) => (element.priceTag.price + previousValue)) + 5}',
+                  '${CartUtils.calcularTotal(state.cart).toStringAsFixed(2)}',
                   AppText.h3b),
               const DashedSeparator(),
               Space.yf(.8),
@@ -89,7 +90,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             isLoading = true;
                           });
                         } else if (state is OrderAddSuccess) {
-                       //   context.read<CartBloc>().add(const ClearCart());
+                          //   context.read<CartBloc>().add(const ClearCart());
                           Navigator.of(context)
                               .pushNamed(AppRouter.ordersuccess);
                         } else if (state is OrderAddFail) {
@@ -124,23 +125,22 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                       );
                                     });
                               } else {
-                                context.read<OrderAddCubit>().addOrder(
-                                    OrderDetails(
-                                        id: '',
-                                        orderItems: state.cart
-                                            .map((item) => OrderItem(
-                                                  id: '',
-                                                  product: item.product,
-                                                  priceTag: item.priceTag,
-                                                  price: item.priceTag.price,
-                                                  quantity: 1,
-                                                ))
-                                            .toList(),
-                                        deliveryInfo: context
-                                            .read<DeliveryInfoFetchCubit>()
-                                            .state
-                                            .selectedDeliveryInformation!,
-                                        discount: 0));
+                                // context.read<OrderAddCubit>().addOrder(
+                                //     OrderDetails(
+                                //         id: '',
+                                //         orderItems: state.cart
+                                //             .map((item) => OrderItem(
+                                //                   id: '',
+                                //                   product: item.product,
+                                //                   price: item.priceTag.price,
+                                //                   quantity: 1,
+                                //                 ))
+                                //             .toList(),
+                                //         deliveryInfo: context
+                                //             .read<DeliveryInfoFetchCubit>()
+                                //             .state
+                                //             .selectedDeliveryInformation!,
+                                //         discount: 0));
                               }
                             },
                             buttonText:

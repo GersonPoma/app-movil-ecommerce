@@ -26,19 +26,19 @@ class SquareProductItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: (){
-                    Navigator.of(context)
-                        .pushNamed(AppRouter.productDetails, arguments: product);
+                  onTap: () {
+                    Navigator.of(context).pushNamed(AppRouter.productDetails,
+                        arguments: product);
                   },
                   child: Container(
                     decoration:
                         BoxDecoration(border: Border.all(color: Colors.grey)),
                     child: Hero(
-                      tag:product!.id ,
+                      tag: product!.id,
                       child: CachedNetworkImage(
                         height: AppDimensions.normalize(70),
                         width: AppDimensions.normalize(70),
-                        imageUrl: product!.images.last,
+                        imageUrl: product!.imagenUrl,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => placeholderShimmer(),
                         errorWidget: (context, url, error) =>
@@ -51,7 +51,7 @@ class SquareProductItem extends StatelessWidget {
                 SizedBox(
                   width: AppDimensions.normalize(60),
                   child: Text(
-                    product!.name.toUpperCase(),
+                    product!.nombre.toUpperCase(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppText.h2b?.copyWith(color: AppColors.GreyText),

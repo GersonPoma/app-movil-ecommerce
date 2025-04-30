@@ -17,12 +17,12 @@ Future<void> showCredentialErrorDialog(BuildContext context) async {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Username/Password Wrong!",
+                    "¡Nombre de usuario/contraseña incorrectos!",
                     style: AppText.b1b,
                   ),
                   Space.yf(.5),
                   Text(
-                    "Try Again!",
+                    "¡Intentar otra vez!",
                     style: AppText.b1,
                   ),
                   Row(
@@ -33,7 +33,7 @@ Future<void> showCredentialErrorDialog(BuildContext context) async {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            "Dismiss",
+                            "Cerrar",
                             style: AppText.h3b?.copyWith(
                               color: AppColors.CommonCyan,
                             ),

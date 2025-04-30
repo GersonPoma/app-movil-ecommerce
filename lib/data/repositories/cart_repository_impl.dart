@@ -39,9 +39,35 @@ class CartRepositoryImpl implements CartRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> deleteFormCart() {
-    // TODO: implement deleteFormCart
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> updateCartItem(CartItem cartItem) async {
+    try {
+      final token = await userLocalDataSource.getToken();
+      await remoteDataSource.updateCartItem(
+        CartItemModel.fromParent(cartItem),
+        token,
+      );
+      return Right(true);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteFromCart(String cartItemId) async {
+    try {
+      // Eliminar del almacenamiento local
+      await localDataSource.deleteCartItem(cartItemId);
+
+      // Si el usuario está logueado, eliminar también en el backend
+      if (await userLocalDataSource.isTokenAvailable()) {
+        final String token = await userLocalDataSource.getToken();
+        await remoteDataSource.deleteCartItem(cartItemId, token);
+      }
+
+      return Right(true);
+    } catch (e) {
+      return Left(CacheFailure()); // O ServerFailure según el caso
+    }
   }
 
   @override

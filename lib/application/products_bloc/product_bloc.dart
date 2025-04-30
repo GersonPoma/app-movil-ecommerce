@@ -16,14 +16,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final GetProductUseCase _getProductUseCase;
 
   ProductBloc(this._getProductUseCase)
-      : super(ProductInitial(
-            products: const [],
-            params: const FilterProductParams(),
-            metaData: PaginationMetaData(
-              pageSize: 20,
-              limit: 0,
-              total: 0,
-            ))) {
+      : super(const ProductInitial(
+          products: [],
+          params: FilterProductParams(),
+          siguientePaginaUrl: null,
+        )) {
     on<GetProducts>(_onLoadProducts);
     on<GetMoreProducts>(_onLoadMoreProducts);
     on<SortProducts>(_onSortProducts);
@@ -32,104 +29,107 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   void _onLoadProducts(GetProducts event, Emitter<ProductState> emit) async {
     try {
       emit(ProductLoading(
-        products: const [],
-        metaData: state.metaData,
+        products: [],
         params: event.params,
+        siguientePaginaUrl: null,
       ));
       final result = await _getProductUseCase(event.params);
       result.fold(
         (failure) => emit(ProductError(
-          products: state.products,
-          metaData: state.metaData,
+          products: [],
           failure: failure,
           params: event.params,
+          siguientePaginaUrl: null,
         )),
         (productResponse) => emit(ProductLoaded(
-          metaData: productResponse.paginationMetaData,
-          products: productResponse.products,
+          products: productResponse.productos,
           params: event.params,
+          siguientePaginaUrl: productResponse.siguientePaginaUrl,
         )),
       );
     } catch (e) {
       emit(ProductError(
-        products: state.products,
-        metaData: state.metaData,
+        products: [],
         failure: ExceptionFailure(),
         params: event.params,
+        siguientePaginaUrl: null,
       ));
     }
   }
 
   void _onSortProducts(SortProducts event, Emitter<ProductState> emit) {
-    // Use the sort order from the event to trigger sorting
-    if (event.sortOrder != null) {
-      state.products.sort((a, b) {
+    if (event.sortOrder != null && state is ProductLoaded) {
+      final sortedProducts = List<ProductEntity>.from(state.products);
+
+      sortedProducts.sort((a, b) {
         switch (event.sortOrder!) {
           case SortOrder.newest:
-            return b.createdAt.compareTo(a.createdAt);
+            return b.fechaCreacion.compareTo(a.fechaCreacion);
           case SortOrder.highToLow:
-            return b.priceTags.first.price.compareTo(a.priceTags.first.price);
+            return b.precio.compareTo(a.precio);
           case SortOrder.lowToHigh:
-            return a.priceTags.first.price.compareTo(b.priceTags.first.price);
+            return a.precio.compareTo(b.precio);
           case SortOrder.aToZ:
-            return a.name.compareTo(b.name);
+            return a.nombre.compareTo(b.nombre);
           case SortOrder.zToA:
-            return b.name.compareTo(a.name);
+            return b.nombre.compareTo(a.nombre);
         }
       });
-    } else {
-      // If SortOrder is null, consider it as a request for unsorted products
-      // You can optionally log a message or handle it in a specific way
-      // For now, let's keep the products in their current order
-    }
 
-    emit(ProductLoaded(
-      metaData: state.metaData,
-      products: state.products,
-      params: state.params,
-    ));
+      emit(ProductLoaded(
+        products: sortedProducts,
+        params: state.params,
+        siguientePaginaUrl: (state as ProductLoaded).siguientePaginaUrl,
+      ));
+    }
   }
 
   void _onLoadMoreProducts(
       GetMoreProducts event, Emitter<ProductState> emit) async {
-    var state = this.state;
-    var limit = state.metaData.limit;
-    var total = state.metaData.total;
-    var loadedProductsLength = state.products.length;
-    // check state and loaded products amount[loadedProductsLength] compare with
-    // number of results total[total] results available in server
-    if (state is ProductLoaded && (loadedProductsLength < total)) {
+    var currentState = state;
+
+    if (currentState is ProductLoaded) {
+      if (currentState.siguientePaginaUrl == null) {
+        // No hay más páginas que cargar
+        return;
+      }
+
       try {
         emit(ProductLoading(
-          products: state.products,
-          metaData: state.metaData,
-          params: state.params,
+          products: currentState.products,
+          params: currentState.params,
+          siguientePaginaUrl: currentState.siguientePaginaUrl,
         ));
+
+        // Incrementamos la página
         final result =
-            await _getProductUseCase(FilterProductParams(limit: limit + 10));
+            await _getProductUseCase.fromUrl(currentState.siguientePaginaUrl!);
+
         result.fold(
           (failure) => emit(ProductError(
-            products: state.products,
-            metaData: state.metaData,
+            products: currentState.products,
             failure: failure,
-            params: state.params,
+            params: currentState.params,
+            siguientePaginaUrl: currentState.siguientePaginaUrl,
           )),
           (productResponse) {
-            List<ProductEntity> products = state.products;
-            products.addAll(productResponse.products);
+            final updatedProducts =
+                List<ProductEntity>.from(currentState.products)
+                  ..addAll(productResponse.productos);
+
             emit(ProductLoaded(
-              metaData: state.metaData,
-              products: products,
-              params: state.params,
+              products: updatedProducts,
+              params: currentState.params,
+              siguientePaginaUrl: productResponse.siguientePaginaUrl,
             ));
           },
         );
       } catch (e) {
         emit(ProductError(
-          products: state.products,
-          metaData: state.metaData,
+          products: currentState.products,
           failure: ExceptionFailure(),
-          params: state.params,
+          params: currentState.params,
+          siguientePaginaUrl: currentState.siguientePaginaUrl,
         ));
       }
     }

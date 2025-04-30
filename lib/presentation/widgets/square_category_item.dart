@@ -44,7 +44,7 @@ class SquareCategoryItem extends StatelessWidget {
                     child: CachedNetworkImage(
                       height: AppDimensions.normalize(70),
                       width: AppDimensions.normalize(70),
-                      imageUrl: category!.image,
+                      imageUrl: category!.imagenUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => placeholderShimmer(),
                       errorWidget: (context, url, error) =>
@@ -53,7 +53,7 @@ class SquareCategoryItem extends StatelessWidget {
                   ),
                   Space.y1!,
                   Text(
-                    category!.name.toUpperCase(),
+                    category!.nombre.toUpperCase(),
                     style: AppText.h2b?.copyWith(color: AppColors.GreyText),
                   )
                 ],

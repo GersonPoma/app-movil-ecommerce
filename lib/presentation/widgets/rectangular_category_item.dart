@@ -51,7 +51,7 @@ class RectangularCategoryItem extends StatelessWidget {
                     child: CachedNetworkImage(
                       height: AppDimensions.normalize(40),
                       width: AppDimensions.normalize(60),
-                      imageUrl: category!.image,
+                      imageUrl: category!.imagenUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => placeholderShimmer(),
                       errorWidget: (context, url, error) =>
@@ -60,7 +60,7 @@ class RectangularCategoryItem extends StatelessWidget {
                   ),
                   Space.x1!,
                   Text(
-                    category!.name,
+                    category!.nombre,
                     overflow: TextOverflow.ellipsis,
                     style: AppText.h2b?.copyWith(color: AppColors.GreyText),
                   ),

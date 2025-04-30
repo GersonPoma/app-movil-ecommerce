@@ -8,7 +8,6 @@ import '../../core/networkchecker/network_info.dart';
 import '../data_sources/local/category_local_data_source.dart';
 import '../data_sources/remote/category_remote_data_source.dart';
 
-
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource remoteDataSource;
   final CategoryLocalDataSource localDataSource;
@@ -52,7 +51,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       final categories = cachedCategories;
       final filteredCategories = categories
           .where((element) =>
-              element.name.toLowerCase().contains(params.toLowerCase()))
+              element.nombre.toLowerCase().contains(params.toLowerCase()))
           .toList();
       return Right(filteredCategories);
     } on CacheException {

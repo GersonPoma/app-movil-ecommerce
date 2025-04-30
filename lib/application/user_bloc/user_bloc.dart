@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:piiicks/domain/usecases/user/is_token_available_use_case.dart';
 
 import '../../../core/error/failures.dart';
 import '../../../core/usecases/usecase.dart';
@@ -21,11 +22,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final SignInUseCase _signInUseCase;
   final SignUpUseCase _signUpUseCase;
   final SignOutUseCase _signOutUseCase;
+  final IsTokenAvailableUseCase _isTokenAvailableUseCase;
   UserBloc(
     this._signInUseCase,
     this._getCachedUserUseCase,
     this._signOutUseCase,
     this._signUpUseCase,
+    this._isTokenAvailableUseCase,
   ) : super(UserInitial()) {
     on<SignInUser>(_onSignIn);
     on<SignUpUser>(_onSignUp);
@@ -47,16 +50,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   void _onCheckUser(CheckUser event, Emitter<UserState> emit) async {
-    try {
-      emit(UserLoading());
-      final result = await _getCachedUserUseCase(NoParams());
-      result.fold(
-        (failure) => emit(UserLoggedFail(failure)),
-        (user) => emit(UserLogged(user)),
-      );
-    } catch (e) {
-      emit(UserLoggedFail(ExceptionFailure()));
+    emit(UserLoading());
+
+    final tokenResult = await _isTokenAvailableUseCase(NoParams());
+    final hasToken = tokenResult.getOrElse(() => false);
+
+    if (!hasToken) {
+      emit(UserLoggedOut());
+      return;
     }
+
+    final userResult = await _getCachedUserUseCase(NoParams());
+    userResult.fold(
+      (failure) => emit(UserLoggedFail(failure)),
+      (user) => emit(UserLogged(user)),
+    );
   }
 
   FutureOr<void> _onSignUp(SignUpUser event, Emitter<UserState> emit) async {

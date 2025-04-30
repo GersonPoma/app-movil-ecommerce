@@ -14,13 +14,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
+  
+  record: ^4.4.0
+  speech_to_text: ^6.3.0
   cupertino_icons: ^1.0.2
   equatable:
   dartz:
   shared_preferences: ^2.0.0
-  http: ^0.13.0
+  http: ^0.13.5
   internet_connection_checker:
   flutter_bloc:
   get_it:
@@ -35,7 +36,7 @@ dependencies:
   share_plus:
   get_storage:
   screenshot:
-  path_provider:
+  path_provider: ^2.0.15
   url_launcher:
   flutter_phoenix:
 

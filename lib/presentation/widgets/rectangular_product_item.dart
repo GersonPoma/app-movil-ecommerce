@@ -45,12 +45,12 @@ class RectangularProductItem extends StatelessWidget {
             children: [
               Hero(
                 tag: product!.id,
-                child: product!.images.isNotEmpty
+                child: product!.imagenUrl.isNotEmpty
                     ? CachedNetworkImage(
                         height: AppDimensions.normalize(70),
                         imageUrl: isFromWishlist
-                            ? product!.images.last
-                            : product!.images.first,
+                            ? product!.imagenUrl
+                            : product!.imagenUrl,
                         placeholder: (context, url) => placeholderShimmer(),
                         errorWidget: (context, url, error) =>
                             const Center(child: Icon(Icons.error)),
@@ -62,15 +62,15 @@ class RectangularProductItem extends StatelessWidget {
               ),
               Space.y1!,
               Text(
-                product!.name,
+                product!.nombre,
                 style: AppText.h3b,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               Space.y!,
-              product!.priceTags.isNotEmpty
+              product!.precio != 0
                   ? Text(
-                      r'$ ' + product!.priceTags.first.price.toString(),
+                      product!.precio.toStringAsFixed(2) + r' Bs',
                       style: AppText.h3?.copyWith(
                         color: AppColors.CommonCyan,
                       ),

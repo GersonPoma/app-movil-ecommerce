@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piiicks/application/cart_bloc/cart_bloc.dart';
 import 'package:piiicks/configs/app_dimensions.dart';
 import 'package:piiicks/configs/app_typography.dart';
 import 'package:piiicks/configs/space.dart';
 import 'package:piiicks/core/constant/colors.dart';
+import 'package:piiicks/core/constant/notifications.dart';
 import 'package:piiicks/presentation/widgets/dashed_separator.dart';
 import 'package:piiicks/presentation/widgets/loading_shimmer.dart';
 import 'package:piiicks/presentation/widgets/quantity_row.dart';
@@ -47,60 +50,77 @@ class CartItemCard extends StatelessWidget {
           },
           onLongPress: onLongClick,
           child: SizedBox(
-            height: AppDimensions.normalize(50),
-            width: double.infinity,
-            child: Row(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: cartItem!.product.images.last,
-                  width: AppDimensions.normalize(50),
-                  height: double.infinity,
-                  fit: BoxFit.fill,
-                  placeholder: (context, url) =>
-                      LoadingShimmer(isSquare: false),
-                  errorWidget: (context, url, error) =>
-                      const Center(child: Icon(Icons.error)),
-                ),
-                Space.xf(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        width: AppDimensions.normalize(75),
-                        child: Text(
-                          cartItem!.product.name,
-                          maxLines: 2,
-                          style: AppText.h3b,
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                    Space.yf(.5),
-                    Text(
-                      "${cartItem!.product.priceTags.first.price} \$",
-                      style: AppText.h3b?.copyWith(color: AppColors.CommonCyan),
-                    ),
-                    Space.yf(),
-                    Row(
+              height: AppDimensions.normalize(50),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: cartItem!.product.imagenUrl,
+                    width: AppDimensions.normalize(50),
+                    height: double.infinity,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) =>
+                        LoadingShimmer(isSquare: false),
+                    errorWidget: (context, url, error) =>
+                        const Center(child: Icon(Icons.error)),
+                  ),
+                  Space.xf(),
+                  Expanded(
+                    // 🚨 Aquí agregamos Expanded para que no se desborde
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                            height: AppDimensions.normalize(15),
-                            width: AppDimensions.normalize(55),
-                            child: QuantityRow(14, 1.5)),
-                        Space.xf(),
-                        GestureDetector(
-                          onTap: onLongClick,
-                          child: const Icon(
-                            Icons.delete_forever_outlined,
-                            size: 40,
-                            color: Colors.black54,
+                          width: double.infinity,
+                          child: Text(
+                            cartItem!.product.nombre,
+                            maxLines: 2,
+                            style: AppText.h3b,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                        ),
+                        Space.yf(.5),
+                        Text(
+                          "${cartItem!.product.precio} \$",
+                          style: AppText.h3b
+                              ?.copyWith(color: AppColors.CommonCyan),
+                        ),
+                        Space.yf(),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: AppDimensions.normalize(15),
+                              width: AppDimensions.normalize(55),
+                              child: QuantityRow(
+                                  width: 14,
+                                  padding: 1.5,
+                                  cantidad: cartItem!.cantidad,
+                                  onChanged: (newCatidad) {
+                                    context.read<CartBloc>().add(AddProduct(
+                                        cartItem: CartItem(
+                                          id: cartItem!.id,
+                                          product: cartItem!.product,
+                                          cantidad: newCatidad,
+                                        ),
+                                        replaceQuantity: true));
+                                  }),
+                            ),
+                            Space.xf(),
+                            GestureDetector(
+                              onTap: onLongClick,
+                              child: const Icon(
+                                Icons.delete_forever_outlined,
+                                size: 40,
+                                color: Colors.black54,
+                              ),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
+                    ),
+                  )
+                ],
+              )),
         ),
         Space.yf(1),
         const DashedSeparator()
@@ -108,4 +128,3 @@ class CartItemCard extends StatelessWidget {
     );
   }
 }
-

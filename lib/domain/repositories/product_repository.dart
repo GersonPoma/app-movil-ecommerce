@@ -6,8 +6,10 @@ import '../../data/models/product/filter_params_model.dart';
 import '../entities/product/product_response.dart';
 
 abstract class ProductRepository {
-  Future<Either<Failure, ProductResponse>> getProducts(FilterProductParams params);
+  Future<Either<Failure, ProductResponse>> getProducts(
+      FilterProductParams params);
 
+  Future<Either<Failure, ProductResponse>> getProductsFromUrl(String url);
 /*  // Database methods
   Future < List < Product >> getBookmarks();
 

@@ -41,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
                         builder: (context, state) {
                           if (state is UserLogged) {
                             return userLoggedProfileContainer(context,
-                                "${state.user.firstName}!", state.user.email);
+                                "${state.user.username}!", state.user.email);
                           } else {
                             return unloggedProfileContainer(context);
                           }

@@ -1,4 +1,6 @@
 // Feature: User
+import 'package:piiicks/domain/usecases/user/is_token_available_use_case.dart';
+
 import '../application/user_bloc/user_bloc.dart';
 import '../data/data_sources/local/user_local_data_source.dart';
 import '../data/data_sources/remote/user_remote_data_source.dart';
@@ -12,24 +14,25 @@ import 'di.dart';
 
 void registerUserFeature() {
   // User BLoC and Use Cases
-  sl.registerFactory(() => UserBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => UserBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerLazySingleton(() => GetCachedUserUseCase(sl()));
   sl.registerLazySingleton(() => SignInUseCase(sl()));
   sl.registerLazySingleton(() => SignUpUseCase(sl()));
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
+  sl.registerLazySingleton(() => IsTokenAvailableUseCase(sl()));
 
   // User Repository and Data Sources
   sl.registerLazySingleton<UserRepository>(
-        () => UserRepositoryImpl(
+    () => UserRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
     ),
   );
   sl.registerLazySingleton<UserLocalDataSource>(
-        () => UserLocalDataSourceImpl(sharedPreferences: sl(), secureStorage: sl()),
+    () => UserLocalDataSourceImpl(sharedPreferences: sl(), secureStorage: sl()),
   );
   sl.registerLazySingleton<UserRemoteDataSource>(
-        () => UserRemoteDataSourceImpl(client: sl()),
+    () => UserRemoteDataSourceImpl(client: sl()),
   );
 }

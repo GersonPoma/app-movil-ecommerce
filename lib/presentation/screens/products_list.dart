@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:piiicks/configs/configs.dart';
+import 'package:piiicks/presentation/widgets/voice_command_button.dart';
 
 import '../../application/filter_cubit/filter_cubit.dart';
 import '../../application/products_bloc/product_bloc.dart';
@@ -62,12 +63,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                   left: AppDimensions.normalize(5),
                   bottom: AppDimensions.normalize(5)),
               child: Text(
-                "SORT BY",
+                "ORDENAR POR",
                 style: AppText.h3b,
               ),
             ),
             ListTile(
-              title: Text('Newest', style: AppText.h3),
+              title: Text('El más nuevo', style: AppText.h3),
               trailing: Radio(
                 value: SortOrder.newest,
                 fillColor: MaterialStateProperty.all(AppColors.CommonCyan),
@@ -81,7 +82,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ),
             ),
             ListTile(
-              title: Text('Price High to Low', style: AppText.h3),
+              title: Text('Precio de mayor a menor', style: AppText.h3),
               trailing: Radio(
                 value: SortOrder.highToLow,
                 fillColor: MaterialStateProperty.all(AppColors.CommonCyan),
@@ -95,7 +96,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ),
             ),
             ListTile(
-              title: Text('Price Low to High', style: AppText.h3),
+              title: Text('Precio de menor a mayor', style: AppText.h3),
               trailing: Radio(
                 value: SortOrder.lowToHigh,
                 fillColor: MaterialStateProperty.all(AppColors.CommonCyan),
@@ -109,7 +110,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ),
             ),
             ListTile(
-              title: Text('Alphabetic (A-Z)', style: AppText.h3),
+              title: Text('Alfabético (A-Z)', style: AppText.h3),
               trailing: Radio(
                 value: SortOrder.aToZ,
                 fillColor: MaterialStateProperty.all(AppColors.CommonCyan),
@@ -123,7 +124,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
               ),
             ),
             ListTile(
-              title: Text('Alphabetic (Z-A)', style: AppText.h3),
+              title: Text('Alfabético (Z-A)', style: AppText.h3),
               trailing: Radio(
                 value: SortOrder.zToA,
                 fillColor: MaterialStateProperty.all(AppColors.CommonCyan),
@@ -153,7 +154,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           if (state is ProductLoaded && state.products.isEmpty) {
             return Center(
               child: Text(
-                "Products not found!",
+                "¡Productos no encontrados!",
                 style: AppText.h3b,
               ),
             );
@@ -163,7 +164,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
             if (state.failure is NetworkFailure) {
               return Center(
                 child: Text(
-                  "Network failure\nTry again!",
+                  "¡Error de red\nInténtalo de nuevo!",
                   style: AppText.h3b,
                 ),
               );
@@ -201,12 +202,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                         builder: (context, filterState) {
                           return filterState.categories.length == 0
                               ? Text(
-                                  "All Products".toUpperCase(),
+                                  "Todos los productos".toUpperCase(),
                                   style: AppText.b1b
                                       ?.copyWith(color: AppColors.GreyText),
                                 )
                               : Text(
-                                  filterState.categories.first.name
+                                  filterState.categories.first.nombre
                                       .toUpperCase(),
                                   style: AppText.b1b
                                       ?.copyWith(color: AppColors.GreyText),
@@ -252,7 +253,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                                   ? const SizedBox.shrink()
                                   : BlackDot(),
                               Space.x!,
-                              Text("Sort by",
+                              Text("Ordenar por",
                                   style: AppText.b1
                                       ?.copyWith(color: AppColors.GreyText))
                             ],
@@ -274,7 +275,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                                   ? BlackDot()
                                   : const SizedBox.shrink(),
                               Space.x!,
-                              Text("Filter",
+                              Text("Filtrar",
                                   style: AppText.b1
                                       ?.copyWith(color: AppColors.GreyText))
                             ],
@@ -314,6 +315,7 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
           );
         }),
       ),
+      floatingActionButton: const VoiceCommandButton(), // 👈 AQUÍ VA EL BOTÓN
     );
   }
 }

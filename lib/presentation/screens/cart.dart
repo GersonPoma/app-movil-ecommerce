@@ -29,9 +29,17 @@ class _CartScreenState extends State<CartScreen> {
   bool isCartError = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    //Aquí refrescas el carrito apenas entras a CartScreen
+    context.read<CartBloc>().add(const GetCart());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar("CART", context, automaticallyImplyLeading: true),
+      appBar: CustomAppBar("CARRITO", context, automaticallyImplyLeading: true),
       body: Stack(
         children: [
           Padding(
@@ -45,12 +53,16 @@ class _CartScreenState extends State<CartScreen> {
                     });*/
                   },
                   builder: (context, state) {
+                    final cart = state.cart;
+
                     if (state is CartError) {
                       return errorContainer(context, true);
                     }
-                    if (state is CartLoaded && state.cart.isEmpty) {
+
+                    if (cart.isEmpty) {
                       return emptyCartContainer(context);
                     }
+
                     return Expanded(
                       child: ListView.builder(
                         itemCount: (state is CartLoading)
@@ -66,21 +78,19 @@ class _CartScreenState extends State<CartScreen> {
                             return const CartItemCard();
                           } else {
                             if (state.cart.length < index) {
-                              return const CartItemCard();
+                              return const CartItemCard(); // Esto podría provocar un error o mostrar tarjetas vacías
                             }
                             return CartItemCard(
                               cartItem: state.cart[index],
                               isSelected: selectedCartItems.any(
                                   (element) => element == state.cart[index]),
                               onLongClick: () {
-                                setState(() {
-                                  if (selectedCartItems.any((element) =>
-                                      element == state.cart[index])) {
-                                    selectedCartItems.remove(state.cart[index]);
-                                  } else {
-                                    selectedCartItems.add(state.cart[index]);
-                                  }
-                                });
+                                final id = state.cart[index].id;
+                                if (id != null) {
+                                  context
+                                      .read<CartBloc>()
+                                      .add(DeleteProduct(id));
+                                }
                               },
                             );
                           }
@@ -99,13 +109,13 @@ class _CartScreenState extends State<CartScreen> {
             builder: (context, state) {
               if (state is UserLogged) {
                 return const PaymentDetails(
-                  buttonText: "Proceed To Checkout",
+                  buttonText: "Proceder a Pagar",
                   isFromCheckout: false,
                   isLogged: true,
                 );
               } else {
                 return const PaymentDetails(
-                  buttonText: "Proceed To Checkout",
+                  buttonText: "Proceder a Pagar",
                   isFromCheckout: false,
                   isLogged: false,
                 );

@@ -25,11 +25,11 @@ class OrderSuccessScreen extends StatefulWidget {
 class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   @override
   void initState() {
-    context.read<NotificationsCubit>().showAndSaveNotification(
-        "Orders Update",
+    context.read<NotificationsCubit>().showAndSaveNotification("Orders Update",
         "Congratulations, You have successfully Placed a New Order.");
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +160,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                       ),
                                       Space.yf(.8),
                                       Text(
-                                        "${state.cart.fold(0.0, (previousValue, element) => (element.priceTag.price + previousValue)) + 5}",
+                                        "${state.cart.fold(0.0, (previousValue, element) => (element.product.precio + previousValue)) + 5}",
                                         style: AppText.h3b,
                                       ),
                                     ],

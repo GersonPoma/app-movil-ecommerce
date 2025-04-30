@@ -11,8 +11,6 @@ import '../data_sources/remote/product_remote_data_source.dart';
 import '../models/product/filter_params_model.dart';
 import '../models/product/product_response_model.dart';
 
-typedef _ConcreteOrProductChooser = Future<ProductResponse> Function();
-
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
   final ProductLocalDataSource localDataSource;
@@ -27,18 +25,14 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, ProductResponse>> getProducts(
       FilterProductParams params) async {
-    return await _getProduct(() {
-      return remoteDataSource.getProducts(params);
-    });
-  }
-
-  Future<Either<Failure, ProductResponse>> _getProduct(
-    _ConcreteOrProductChooser getConcreteOrProducts,
-  ) async {
     if (await networkInfo.isConnected) {
       try {
-        final remoteProducts = await getConcreteOrProducts();
-        localDataSource.saveProducts(remoteProducts as ProductResponseModel);
+        final ProductResponseModel remoteProducts =
+            await remoteDataSource.getProducts(params);
+
+        // Guardamos en caché
+        await localDataSource.saveProducts(remoteProducts);
+
         return Right(remoteProducts);
       } on ServerException {
         return Left(ServerFailure());
@@ -52,4 +46,36 @@ class ProductRepositoryImpl implements ProductRepository {
       }
     }
   }
+
+  @override
+  Future<Either<Failure, ProductResponse>> getProductsFromUrl(
+      String url) async {
+    try {
+      final response = await remoteDataSource.fetchProductsFromUrl(url);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  // Future<Either<Failure, ProductResponse>> _getProduct(
+  //   _ConcreteOrProductChooser getConcreteOrProducts,
+  // ) async {
+  //   if (await networkInfo.isConnected) {
+  //     try {
+  //       final remoteProducts = await getConcreteOrProducts();
+  //       localDataSource.saveProducts(remoteProducts as ProductResponseModel);
+  //       return Right(remoteProducts);
+  //     } on ServerException {
+  //       return Left(ServerFailure());
+  //     }
+  //   } else {
+  //     try {
+  //       final localProducts = await localDataSource.getLastProducts();
+  //       return Right(localProducts);
+  //     } on CacheException {
+  //       return Left(CacheFailure());
+  //     }
+  //   }
+  // }
 }

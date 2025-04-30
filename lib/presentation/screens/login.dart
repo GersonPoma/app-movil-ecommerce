@@ -51,7 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar("LOGIN", context, automaticallyImplyLeading: true),
+      appBar: CustomAppBar("INICIAR SESION", context,
+          automaticallyImplyLeading: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: Space.all(1, 1.3),
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "LOGIN",
+                  "INICIAR SESION",
                   style: AppText.h2b?.copyWith(color: AppColors.CommonCyan),
                 ),
                 Space.y!,
@@ -78,27 +79,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 buildTextFormField(_usernameController, "nombre de usuario"),
                 Space.yf(1.5),
                 Text(
-                  "Password*",
+                  "Contraseña*",
                   style: AppText.b1b,
                 ),
                 Space.y!,
                 buildTextFormField(_passwordController, "contraseña",
                     isObscure: true),
                 Space.y1!,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "¿Olvidaste tu contraseña?",
-                      style: AppText.h3?.copyWith(color: AppColors.CommonCyan),
-                    )
-                  ],
-                ),
                 Space.yf(1.7),
                 BlocConsumer<UserBloc, UserState>(
                   listener: (context, state) {
                     if (state is UserLogged) {
-                      showSuccessfulAuthDialog(context, "logged in");
+                      showSuccessfulAuthDialog(context, "Conectado");
                     } else if (state is UserLoggedFail) {
                       if (state.failure is CredentialFailure) {
                         showCredentialErrorDialog(context);
@@ -130,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: Text(
-                        (state is UserLoading) ? "Wait..." : "Login",
+                        (state is UserLoading) ? "Espera..." : "Inciar Sesion",
                         style: AppText.h3b?.copyWith(color: Colors.white),
                       ),
                     );
@@ -149,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onTap: () {
                     Navigator.of(context).pushNamed(AppRouter.signup);
                   },
-                  buttonText: "Signup",
+                  buttonText: "Registrarse",
                 )
               ],
             ),

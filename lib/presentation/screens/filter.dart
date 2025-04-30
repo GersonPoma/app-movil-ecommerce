@@ -92,7 +92,7 @@ class _FilterScreenState extends State<FilterScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  categoryState.categories[index].name
+                                  categoryState.categories[index].nombre
                                       .toUpperCase(),
                                   style: AppText.h3?.copyWith(
                                     color: context
@@ -177,14 +177,14 @@ class _FilterScreenState extends State<FilterScreen> {
                               ?.copyWith(color: AppColors.CommonCyan),
                         ),
                       ),
-                      BlocBuilder<FilterCubit, FilterProductParams>(
-                        builder: (context, state) {
-                          return PriceRangeSlider(
-                            initMin: state.minPrice,
-                            initMax: state.maxPrice,
-                          );
-                        },
-                      ),
+                      // BlocBuilder<FilterCubit, FilterProductParams>(
+                      //   builder: (context, state) {
+                      //     return PriceRangeSlider(
+                      //       initMin: state.minPrice,
+                      //       initMax: state.maxPrice,
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
@@ -202,10 +202,10 @@ class _FilterScreenState extends State<FilterScreen> {
             Space.xf(1.2),
             Expanded(
                 child: GestureDetector(
-                  onTap: (){
-                    context.read<FilterCubit>().reset();
-                  },
-                 child: Container(
+              onTap: () {
+                context.read<FilterCubit>().reset();
+              },
+              child: Container(
                   height: AppDimensions.normalize(24),
                   decoration: BoxDecoration(
                       border: Border.all(color: AppColors.CommonCyan),
@@ -222,12 +222,10 @@ class _FilterScreenState extends State<FilterScreen> {
             Space.x!,
             Expanded(
                 child: ElevatedButton(
-                    onPressed: (){
+                    onPressed: () {
                       context
                           .read<ProductBloc>()
-                          .add(GetProducts(context
-                          .read<FilterCubit>()
-                          .state));
+                          .add(GetProducts(context.read<FilterCubit>().state));
                       Navigator.of(context).pop();
                     },
                     child: Padding(

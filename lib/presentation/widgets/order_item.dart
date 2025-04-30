@@ -98,8 +98,7 @@ class OrderItemWidget extends StatelessWidget {
                                         child: Padding(
                                           padding: Space.all(),
                                           child: CachedNetworkImage(
-                                            imageUrl:
-                                                product.product.images.first,
+                                            imageUrl: product.product.imagenUrl,
                                           ),
                                         )),
                                   ),
@@ -112,17 +111,17 @@ class OrderItemWidget extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        product.product.name,
+                                        product.product.nombre,
                                         style: AppText.b1b,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
                                       ),
                                       Space.yf(.5),
-                                      Text(
-                                        '\$${product.priceTag.price.toStringAsFixed(2)}',
-                                        style: AppText.b1b?.copyWith(
-                                            color: AppColors.CommonCyan),
-                                      )
+                                      // Text(
+                                      //   '\$${product.priceTag.price.toStringAsFixed(2)}',
+                                      //   style: AppText.b1b?.copyWith(
+                                      //       color: AppColors.CommonCyan),
+                                      // )
                                     ],
                                   ),
                                 )

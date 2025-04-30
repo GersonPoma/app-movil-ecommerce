@@ -7,6 +7,7 @@ abstract class CartRepository {
   Future<Either<Failure, List<CartItem>>> getCachedCart();
   Future<Either<Failure, List<CartItem>>> syncCart();
   Future<Either<Failure, CartItem>> addToCart(CartItem params);
-  Future<Either<Failure, bool>> deleteFormCart();
+  Future<Either<Failure, bool>> deleteFromCart(String productId);
   Future<Either<Failure, bool>> clearCart();
+  Future<Either<Failure, bool>> updateCartItem(CartItem cartItem);
 }

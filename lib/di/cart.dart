@@ -1,4 +1,7 @@
 // Feature: Cart
+import 'package:piiicks/domain/usecases/cart/delete_cart_item_usecase.dart';
+import 'package:piiicks/domain/usecases/cart/update_cart_item_usecase.dart';
+
 import '../application/cart_bloc/cart_bloc.dart';
 import '../data/data_sources/local/cart_local_data_source.dart';
 import '../data/data_sources/remote/cart_remote_data_source.dart';
@@ -11,18 +14,20 @@ import '../domain/usecases/cart/sync_cart_usecase.dart';
 import 'di.dart';
 
 void registerCartFeature() {
-  // Cart BLoC and Use Cases
-  sl.registerFactory(
-        () => CartBloc(sl(), sl(), sl(), sl()),
-  );
   // Use cases
   sl.registerLazySingleton(() => GetCachedCartUseCase(sl()));
   sl.registerLazySingleton(() => AddCartUseCase(sl()));
   sl.registerLazySingleton(() => SyncCartUseCase(sl()));
   sl.registerLazySingleton(() => ClearCartUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteCartItemUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCartItemUseCase(sl()));
+  // Cart BLoC and Use Cases
+  sl.registerFactory(
+    () => CartBloc(sl(), sl(), sl(), sl(), sl(), sl()),
+  );
   // Repository
   sl.registerLazySingleton<CartRepository>(
-        () => CartRepositoryImpl(
+    () => CartRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
@@ -31,10 +36,9 @@ void registerCartFeature() {
   );
   // Data sources
   sl.registerLazySingleton<CartRemoteDataSource>(
-        () => CartRemoteDataSourceSourceImpl(client: sl()),
+    () => CartRemoteDataSourceSourceImpl(client: sl()),
   );
   sl.registerLazySingleton<CartLocalDataSource>(
-        () => CartLocalDataSourceImpl(sharedPreferences: sl()),
+    () => CartLocalDataSourceImpl(sharedPreferences: sl()),
   );
-
 }

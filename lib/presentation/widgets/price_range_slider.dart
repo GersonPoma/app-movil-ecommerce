@@ -55,8 +55,8 @@ class _PriceRangeSliderState extends State<PriceRangeSlider> {
           if (values.start < values.end) {
             setState(() {
               _currentRangeValues = values;
-              context.read<FilterCubit>().updateRange(
-                  _currentRangeValues.start, _currentRangeValues.end);
+              // context.read<FilterCubit>().updateRange(
+              //     _currentRangeValues.start, _currentRangeValues.end);
             });
           }
         },

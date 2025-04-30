@@ -20,12 +20,12 @@ Future<void> showSuccessfulAuthDialog(BuildContext context, String text) async {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "SUCCESSFULLY ${text.toUpperCase()}",
+                  "EXITOSAMENTE ${text.toUpperCase()}",
                   style: AppText.b1b,
                 ),
                 Space.yf(.6),
                 Text(
-                  "Congratulations,\nYour Account Has Been Successfully $text!",
+                  "Felicitaciones, su cuenta ha sido creada exitosamente!",
                   style: AppText.b1?.copyWith(height: 1.5),
                 ),
                 Row(
@@ -39,7 +39,8 @@ Future<void> showSuccessfulAuthDialog(BuildContext context, String text) async {
                             .fetchDeliveryInfo();
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           AppRouter.root,
-                          ModalRoute.withName(''),
+                          (Route<dynamic> route) =>
+                              false, // Esto elimina TODAS las rutas anteriores
                         );
                       },
                       child: Text(

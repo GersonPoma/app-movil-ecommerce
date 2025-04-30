@@ -61,7 +61,7 @@ class BottomNavigation extends StatelessWidget {
                         BlendMode.srcIn),
                   ),
                 ),
-                label: 'Categories',
+                label: 'Categorias',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
@@ -78,7 +78,7 @@ class BottomNavigation extends StatelessWidget {
                         BlendMode.srcIn),
                   ),
                 ),
-                label: 'Products',
+                label: 'Productos',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
@@ -95,7 +95,7 @@ class BottomNavigation extends StatelessWidget {
                         BlendMode.srcIn),
                   ),
                 ),
-                label: 'Cart',
+                label: 'Carrito',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
@@ -112,7 +112,7 @@ class BottomNavigation extends StatelessWidget {
                         BlendMode.srcIn),
                   ),
                 ),
-                label: 'Profile',
+                label: 'Perfil',
               ),
             ],
             selectedItemColor: Colors.black,

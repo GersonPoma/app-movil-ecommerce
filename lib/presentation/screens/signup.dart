@@ -24,7 +24,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -47,7 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }*/
   @override
   void dispose() {
-    _nameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -57,7 +57,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar("SIGNUP", context, automaticallyImplyLeading: true),
+      appBar:
+          CustomAppBar("REGISTRARSE", context, automaticallyImplyLeading: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: Space.all(1, 1.3),
@@ -67,80 +68,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "SIGNUP",
+                  "REGISTRARSE",
                   style: AppText.h2b?.copyWith(color: AppColors.CommonCyan),
                 ),
                 Space.y!,
                 Text(
-                  "Create New Account",
+                  "Crearse Nueva Cuenta",
                   style: AppText.h3?.copyWith(color: AppColors.GreyText),
                 ),
                 Space.y2!,
                 Text(
-                  "Full Name*",
+                  "Nombre de usuario*",
                   style: AppText.b1b,
                 ),
                 Space.y!,
-                buildTextFormField(_nameController, "Full Name"),
+                buildTextFormField(_usernameController, "Username"),
                 Space.yf(1.5),
                 Text(
-                  "Email Address*",
+                  "Correo Electrónico*",
                   style: AppText.b1b,
                 ),
                 Space.y!,
-                buildTextFormField(_emailController, "Email Address"),
+                buildTextFormField(_emailController, "Email"),
                 Space.yf(1.5),
                 Text(
-                  "Password*",
+                  "Contraseña*",
                   style: AppText.b1b,
                 ),
                 Space.y!,
-                buildTextFormField(_passwordController, "Password",
+                buildTextFormField(_passwordController, "Contraseña",
                     isObscure: true),
                 Space.yf(1.5),
                 Text(
-                  "Confirm Password*",
+                  "Confirmar Contraseña*",
                   style: AppText.b1b,
                 ),
                 Space.y!,
-                buildTextFormField(_confirmPasswordController, "Password",
+                buildTextFormField(_confirmPasswordController, "Contraseña",
                     isObscure: true),
-                Space.yf(1.5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isChecked = !isChecked;
-                        });
-                      },
-                      child: isChecked
-                          ? const Icon(
-                              Icons.check_box,
-                              color: Colors.black,
-                            )
-                          : const Icon(
-                              Icons.check_box_outline_blank_outlined,
-                              color: Colors.black,
-                            ),
-                    ),
-                    Space.x!,
-                    Text(
-                      "I Accept All Privacy Policies And Terms & Conditions Of ",
-                      style: AppText.l1,
-                    ),
-                    Text(
-                      "Piicks!",
-                      style: AppText.b2b,
-                    )
-                  ],
-                ),
                 Space.yf(1.5),
                 BlocConsumer<UserBloc, UserState>(
                   listener: (context, state) {
                     if (state is UserLogged) {
-                      showSuccessfulAuthDialog(context, "Registered");
+                      showSuccessfulAuthDialog(context, "Registrado");
                     } else if (state is UserLoggedFail) {
                       if (state.failure is CredentialFailure) {
                         showCredentialErrorDialog(context);
@@ -159,8 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             context.read<UserBloc>().add(
                                   SignUpUser(
                                     SignUpParams(
-                                      firstName: _nameController.text,
-                                      lastName: _nameController.text,
+                                      username: _usernameController.text,
                                       email: _emailController.text,
                                       password: _passwordController.text,
                                     ),
@@ -178,7 +147,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       child: Text(
-                        (state is UserLoading) ? "Wait..." : "Signup",
+                        (state is UserLoading) ? "Espera..." : "Registrarse",
                         style: AppText.h3b?.copyWith(color: Colors.white),
                       ),
                     );
@@ -187,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Space.yf(1.5),
                 Center(
                     child: Text(
-                  "Already Have an Account?",
+                  "¿Ya tienes una cuenta?",
                   style: AppText.b1b,
                 )),
                 Space.y1!,
@@ -196,7 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onTap: () {
                       Navigator.of(context).pushNamed(AppRouter.login);
                     },
-                    buttonText: "Login")
+                    buttonText: "Iniciar Sesion")
               ],
             ),
           ),

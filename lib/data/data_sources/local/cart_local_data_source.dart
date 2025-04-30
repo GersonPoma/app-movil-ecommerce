@@ -1,3 +1,4 @@
+import 'package:piiicks/data/models/product/product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/error/failures.dart';
@@ -8,6 +9,7 @@ abstract class CartLocalDataSource {
   Future<void> saveCart(List<CartItemModel> cart);
   Future<void> saveCartItem(CartItemModel cartItem);
   Future<bool> clearCart();
+  Future<void> deleteCartItem(String cartItemId);
 }
 
 const cachedCart = 'CACHED_CART';
@@ -28,14 +30,31 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
   Future<void> saveCartItem(CartItemModel cartItem) {
     final jsonString = sharedPreferences.getString(cachedCart);
     final List<CartItemModel> cart = [];
+
     if (jsonString != null) {
       cart.addAll(cartItemModelListFromLocalJson(jsonString));
     }
-    if (!cart.any((element) =>
-        element.product.id == cartItem.product.id &&
-        element.priceTag.id == cartItem.priceTag.id)) {
+
+    // Verificar si ya existe el producto con la misma cantidad
+    bool exists = false;
+
+    for (int i = 0; i < cart.length; i++) {
+      if (cart[i].product.id == cartItem.product.id) {
+        cart[i] = CartItemModel(
+          id: cart[i].id,
+          product: cart[i].product as ProductModel, // Cast seguro
+          cantidad: cart[i].cantidad + cartItem.cantidad,
+          fechaAgregado: cart[i].fechaAgregado,
+        );
+        exists = true;
+        break;
+      }
+    }
+
+    if (!exists) {
       cart.add(cartItem);
     }
+
     return sharedPreferences.setString(
       cachedCart,
       cartItemModelToJson(cart),
@@ -53,7 +72,26 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
   }
 
   @override
-  Future<bool> clearCart()async {
-    return sharedPreferences.remove(cachedCart);
+  Future<bool> clearCart() async {
+    return await sharedPreferences.remove(cachedCart);
+  }
+
+  @override
+  Future<void> deleteCartItem(String cartItemId) async {
+    final jsonString = sharedPreferences.getString(cachedCart);
+
+    if (jsonString != null) {
+      List<CartItemModel> cart = cartItemModelListFromLocalJson(jsonString);
+
+      // Filtrar eliminando el item con el ID indicado
+      cart.removeWhere((item) => item.id == cartItemId);
+
+      await sharedPreferences.setString(
+        cachedCart,
+        cartItemModelToJson(cart),
+      );
+    } else {
+      throw CacheFailure(); // No había carrito guardado
+    }
   }
 }

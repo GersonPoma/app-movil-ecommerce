@@ -12,7 +12,10 @@ final sl = GetIt.instance;
 
 // Main Initialization
 Future<void> init() async {
-  // Register features
+  // 1️⃣ Primero las dependencias base
+  registerCommonDependencies();
+
+  // 2️⃣ Luego los Features (Blocs, UseCases, Repositorios, DataSources)
   registerCategoryFeature();
   registerProductFeature();
   registerUserFeature();
@@ -20,9 +23,6 @@ Future<void> init() async {
   registerCartFeature();
   registerOrderFeature();
 
-  // Register Cubits
+  // 3️⃣ Finalmente los Cubits generales
   registerCubits();
-
-  // Register common dependencies
-  registerCommonDependencies();
 }

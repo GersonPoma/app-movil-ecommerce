@@ -13,14 +13,27 @@ class GetCart extends CartEvent {
 
 class AddProduct extends CartEvent {
   final CartItem cartItem;
-  const AddProduct({required this.cartItem});
+  final bool replaceQuantity; // 👈 NUEVO
+  const AddProduct({
+    required this.cartItem,
+    this.replaceQuantity = false, // 👈 Por defecto es false (sumar)
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [cartItem];
 }
 
 class ClearCart extends CartEvent {
   const ClearCart();
   @override
   List<Object> get props => [];
+}
+
+class DeleteProduct extends CartEvent {
+  final String cartItemId;
+
+  const DeleteProduct(this.cartItemId);
+
+  @override
+  List<Object> get props => [cartItemId];
 }

@@ -1,9 +1,15 @@
-import 'pagination_meta_data.dart';
 import 'product.dart';
 
 class ProductResponse {
-  final List<ProductEntity> products;
-  final PaginationMetaData paginationMetaData;
+  final List<ProductEntity> productos;
+  final int total;
+  final String? siguientePaginaUrl;
+  final String? paginaAnteriorUrl;
 
-  ProductResponse({required this.products, required this.paginationMetaData});
+  ProductResponse({
+    required this.productos,
+    required this.total,
+    this.siguientePaginaUrl,
+    this.paginaAnteriorUrl,
+  });
 }

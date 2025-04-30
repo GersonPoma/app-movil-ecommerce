@@ -20,6 +20,6 @@ class OrderItem extends Equatable {
 
   @override
   List<Object> get props => [
-    id,
-  ];
+        id,
+      ];
 }

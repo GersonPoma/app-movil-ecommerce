@@ -15,5 +15,10 @@ class GetProductUseCase
       FilterProductParams params) async {
     return await repository.getProducts(params);
   }
-}
 
+  /// Nuevo método para cargar más productos usando la URL directa
+  Future<Either<Failure, ProductResponse>> fromUrl(
+      String siguientePaginaUrl) async {
+    return await repository.getProductsFromUrl(siguientePaginaUrl);
+  }
+}
